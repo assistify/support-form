@@ -72,12 +72,15 @@ export default {
           })
           return
         }
-
-        document.cookie = JSON.stringify({
-          authToken: res.data.authToken,
-          userId: res.data.userId})
-        console.log(document.cookie)
-        this.$router.push({ name: 'Support' })
+        this.$cookies.set('authToken', res.data.authToken)
+        this.$cookies.set('userId', res.data.userId)
+        this.$router.push({ name: 'Support',
+          query:
+          {
+            userId: res.data.userId,
+            authToken: res.data.authToken
+          }
+        })
       })
     },
     loginStatus: function (event) {
