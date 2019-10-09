@@ -57,7 +57,16 @@ export default {
   methods: {
     async onSubmit (evt) {
       evt.preventDefault()
-      await postForm(this.form)
+      const client = {
+        server: 'http://localhost:3000',
+        authToken: this.$route.query.authToken,
+        userId: this.$route.query.userId,
+        channelId: 'GENERAL'
+      }
+
+      postForm(client, this.form, (res) => {
+        console.log(res)
+      })
     },
     onReset (evt) {
       evt.preventDefault()
