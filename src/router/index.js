@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '@/components/Login'
 import Support from '@/components/Support'
-import Configuration from '@/components/Configuration'
+import Configure from '@/components/Configure'
 
 Vue.use(Router)
 
@@ -19,7 +19,7 @@ export default new Router({
   },
   {
     path: '/config',
-    name: 'Configuration',
-    component: Configuration
+    name: 'Configure',
+    component: Configure
   }]
 })

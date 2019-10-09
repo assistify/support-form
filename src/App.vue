@@ -1,12 +1,20 @@
 <template>
+<div>
+     <Navbar/>
   <div id="app">
+      <!-- As a link -->
     <router-view />
+  </div>
   </div>
 </template>
 
 <script>
+import Navbar from '@/components/Navbar'
 export default {
   name: 'App',
+  components: {
+    Navbar
+  },
   methods: {
     makeToast (msg) {
       this.$bvToast.toast(msg.text, {
@@ -40,6 +48,5 @@ img {
   max-width: 100%;
   max-height: 150px;
   display: inline-block;
-  margin-top: 100px;
 }
 </style>

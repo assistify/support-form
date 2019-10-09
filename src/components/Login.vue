@@ -1,6 +1,6 @@
   <template>
   <b-container class="login_page">
-    <b-card align="center" header="Assistify Login" header-tag="header" class="mb-2">
+    <b-card align="center" header="Assistify" header-tag="header" class="mb-2">
       <b-form @submit="onLogin" @reset="onClose" v-if="show">
         <b-form-row align-h="center" class="my-3">
           <b-col>
