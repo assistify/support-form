@@ -1,8 +1,8 @@
 import $ from 'jquery'
-var usageLogger = null
+const usageLogger = null
 
 function getParentRoomMembers (config, callback) {
-  var url
+  let url
   if (config.channelType === 'p') {
     url = config.server + '/api/v1/groups.members'
   } else {
@@ -48,18 +48,18 @@ function createNewDiscussion (config, discussion, callback) {
   })
 }
 
-function createDiscussion (config, mail, callback) {
+function createDiscussion (config, form, callback) {
   // Get the room in which the mail will posted.
   getParentRoomMembers(config, function (response, error) {
     if (error) {
       callback(null, error)
     } else {
-      var members = response.members.map(function (member) {
+      const members = response.members.map(function (member) {
         return member.username
       })
-      var discussion = {
+      const discussion = {
         parentId: config.channelId,
-        name: mail.Subject,
+        name: form.subject,
         members: members || []
       }
       // Create a new channel
@@ -74,20 +74,20 @@ function createDiscussion (config, mail, callback) {
   })
 }
 
-export async function postForm (config, form, callback) {
-  createDiscussion(config, form, function (response, error) {
+export function postForm (client, form, callback) {
+  createDiscussion(client, form, function (response, error) {
     if (error) {
       callback(error)
     } else {
-      var url = config.server + '/api/v1/chat.postMessage'
-      var discussion = response.discussion.name
+      const url = client.server + '/api/v1/chat.postMessage'
+      const discussion = response.discussion.name
       $.ajax({
         url: url,
         dataType: 'json',
         method: 'POST',
         headers: {
-          'X-Auth-Token': config.authToken,
-          'X-User-Id': config.userId
+          'X-Auth-Token': client.authToken,
+          'X-User-Id': client.userId
         },
         data: {
           'roomId': response.discussion._id,
@@ -96,7 +96,7 @@ export async function postForm (config, form, callback) {
         }
       }).done(function (response) {
         if (usageLogger) {
-          sendToLog(config.server.replace(/.*\/\/([^.]+).*/, '$1'), config.userId, response.message.rid)
+          sendToLog(client.server.replace(/.*\/\/([^.]+).*/, '$1'), client.userId, response.message.rid)
         }
         callback(response)
       }).fail(function (error) {
@@ -106,14 +106,26 @@ export async function postForm (config, form, callback) {
   })
 
   function sendToLog (env, userId, parent) {
-    var img = document.createElement('img')
+    const img = document.createElement('img')
     img.src = usageLogger
     document.body.appendChild(img)
   }
 }
 
-export function getChannelKeywords (client) {
-
+export function getChannelKeywords (client, callback) {
+  $.ajax({
+    url: client.server.concat('/api/v1/channels.list'),
+    dataType: 'json',
+    method: 'GET',
+    headers: {
+      'X-Auth-Token': client.authToken,
+      'X-User-Id': client.userId
+    }
+  }).done(function (response) {
+    callback(response)
+  }).fail(function (error) {
+    callback(null, error)
+  })
 }
 
 export function setChannelKeywords (client, channel, callback) {
