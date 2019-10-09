@@ -6,8 +6,12 @@ import router from './router'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import BootstrapVue from 'bootstrap-vue'
+import VueCookies from 'vue-cookies'
 
 Vue.use(BootstrapVue)
+Vue.use(VueCookies)
+
+VueCookies.config('1d')
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
