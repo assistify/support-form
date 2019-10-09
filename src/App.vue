@@ -1,0 +1,45 @@
+<template>
+  <div id="app">
+    <router-view />
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'App',
+  methods: {
+    makeToast (msg) {
+      this.$bvToast.toast(msg.text, {
+        title: msg.title,
+        autoHideDelay: 5000,
+        variant: msg.variant || null,
+        toaster: msg.toaster || 'b-toaster-top-right',
+        solid: true
+      })
+    }
+  }
+}
+</script>
+
+<style>
+body {
+  height: 100vh;
+  margin: 0;
+  padding: 0px;
+  width: 100%;
+}
+#app {
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  margin: 100px;
+}
+
+img {
+  max-width: 100%;
+  max-height: 150px;
+  display: inline-block;
+  margin-top: 100px;
+}
+</style>

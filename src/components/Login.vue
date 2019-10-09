@@ -1,0 +1,96 @@
+  <template>
+  <b-container class="login_page">
+    <b-card align="center" header="Assistify Login" header-tag="header" class="mb-2">
+      <b-form @submit="onLogin" @reset="onClose" v-if="show">
+        <b-form-row align-h="center" class="my-3">
+          <b-col>
+            <b-form-input
+              id="input-username"
+              v-model="form.username"
+              :state="null"
+              placeholder="Username"
+            ></b-form-input>
+          </b-col>
+        </b-form-row>
+        <b-form-row align-h="center" class="my-3">
+          <b-col>
+            <b-form-input
+              id="input-password"
+              v-model="form.password"
+              :state="null"
+              type="password"
+              placeholder="Password"
+            ></b-form-input>
+          </b-col>
+        </b-form-row>
+        <b-form-row align="center" class="my-3">
+          <b-col>
+            <b-button block type="submit" variant="outline-primary">Login</b-button>
+          </b-col>
+        </b-form-row>
+        <b-form-row align-h="center" class="my-3">
+          <b-col>
+            <b-button block type="reset" variant="light">Cancel</b-button>
+          </b-col>
+        </b-form-row>
+      </b-form>
+    </b-card>
+  </b-container>
+</template>
+
+<script>
+import { login } from '../api/login'
+export default {
+  name: 'Login',
+  data () {
+    return {
+      form: {
+        username: '',
+        password: ''
+      },
+      err: false,
+      show: true
+    }
+  },
+  created () {
+    this.loginStatus()
+  },
+  methods: {
+    onLogin: async function (event) {
+      event.preventDefault()
+      const config = {
+        server: 'http://localhost:3000',
+        user: this.form.username,
+        password: this.form.password
+      }
+      await login(config, (res, err) => {
+        if (err) {
+          this.$parent.makeToast({
+            text: err.responseJSON.message,
+            title: 'Login failed',
+            variant: 'danger'
+          })
+          return
+        }
+
+        document.cookie = JSON.stringify({
+          authToken: res.data.authToken,
+          userId: res.data.userId})
+        console.log(document.cookie)
+        this.$router.push({ name: 'Support' })
+      })
+    },
+    loginStatus: function (event) {
+      // this.$router.push({name: 'Support'})
+      // console.log(document.cookie, 'already logged in')
+    },
+    onClose: function (event) {}
+  }
+}
+</script>
+
+<style scoped>
+.login_page {
+  max-width: 500px;
+}
+</style>
