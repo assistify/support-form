@@ -72,13 +72,13 @@ export default {
         // Update the cookie
         this.$cookies.set('authToken', res.data.authToken)
         this.$cookies.set('userId', res.data.userId)
-        res.data.me.roles.includes('admin')
-          ? this.$cookies.set('admin', true)
-          : this.$cookies.set('admin', false)
+        const isAdmin = res.data.me.roles.includes('admin')
+        this.$cookies.set('admin', isAdmin)
 
         // Update the configuration of the app with login details
         this.$parent.config.authToken = res.data.authToken
         this.$parent.config.userId = res.data.userId
+        this.$parent.config.admin = isAdmin
 
         // Move to support creation
         this.$router.push({name: 'Support'})

@@ -20,7 +20,8 @@ export default {
     this.config = {
       server: 'http://localhost:3000',
       authToken: this.$cookies.get('authToken'),
-      userId: this.$cookies.get('userId')
+      userId: this.$cookies.get('userId'),
+      admin: this.$cookies.get('admin')
     }
     const session = checkMySession(this.config)
     if (session.status !== 'error') {
@@ -39,14 +40,12 @@ export default {
     },
     onLogout (event) {
       event.preventDefault()
-      const client = {
-        server: 'http://localhost:3000',
-        userId: this.$route.query.userId,
-        authToken: this.$route.query.authToken
-      }
-      logout(client, () => {
+      logout(this.config, () => {
         this.$router.push({name: 'Login'})
       })
+      this.$cookies.set('authToken', null)
+      this.$cookies.set('userId', null)
+      this.$cookies.set('admin', null)
     }
   }
 }
