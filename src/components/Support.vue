@@ -42,7 +42,9 @@
 
 <script>
 import {postForm, getChannelKeywords} from '../api/message'
+
 export default {
+  name: 'Support',
   data () {
     return {
       form: {
@@ -54,15 +56,12 @@ export default {
       show: true
     }
   },
-  beforeCreate: function () {
-
-  },
   created: function () {
     // Read document cookie
     this.keywords = getChannelKeywords(this.$parent.config)
   },
   methods: {
-    async onSubmit (evt) {
+    onSubmit (evt) {
       evt.preventDefault()
       const text = this.form.subject
       const channelMatched = this.keywords.find((channel) => {
@@ -70,16 +69,41 @@ export default {
         if (found) {
           return channel.id
         }
-        return false
       })
-      const client = {
-        server: 'http://localhost:3000',
-        authToken: this.$cookie.get('authToken'),
-        userId: this.$cookie.get('userId'),
-        channelId: channelMatched.id || 'GENERAL'
-      }
-      postForm(client, this.form, res => {
-        alert(res.responseJSON)
+      const client = Object.assign({
+        channelId: (channelMatched && channelMatched.id) || 'GENERAL'
+      }, this.$parent.config)
+      postForm(client, this.form, (res, err) => {
+        const modalConfig = {
+          size: 'sm',
+          buttonSize: 'sm',
+          headerClass: 'p-2 border-bottom-0',
+          centered: true,
+          okTitle: 'YES',
+          cancelTitle: 'NO',
+          footerClass: 'p-2',
+          hideHeaderClose: false
+        }
+        const messageURL = `${this.$parent.config.server}/group/${res.channel.substring(1)}?msg=${res.message._id}`
+        if (err) {
+          Object.assign(modalConfig, {
+            title: 'Failed',
+            okVariant: 'error',
+            text: 'Discussion cannot be created in Assistify. Please re-try later.'
+          })
+        } else {
+          Object.assign(modalConfig, {
+            title: 'Success',
+            okVariant: 'success',
+            text: 'Discussion was created in Assistify. Would you like to view the discussion?'
+          })
+        }
+        this.$bvModal.msgBoxConfirm(modalConfig.text, modalConfig)
+          .then(value => {
+            if (value) {
+              window.open(messageURL, '_blank')
+            }
+          })
       })
     },
     onReset (evt) {

@@ -1,16 +1,16 @@
 <template>
-<div>
-     <Navbar/>
+  <div>
+    <Navbar />
     <div id="app">
       <!-- As a link -->
-    <router-view />
-  </div>
+      <router-view />
+    </div>
   </div>
 </template>
 
 <script>
 import Navbar from '@/components/Navbar'
-import {logout, checkMySession} from './api/login'
+import { logout, checkMySession } from './api/login'
 export default {
   name: 'App',
   components: {
@@ -25,7 +25,7 @@ export default {
     }
     const session = checkMySession(this.config)
     if (session.status !== 'error') {
-      this.$router.push({name: 'Support'})
+      this.$router.push({ name: 'Support' })
     }
   },
   methods: {
@@ -41,7 +41,7 @@ export default {
     onLogout (event) {
       event.preventDefault()
       logout(this.config, () => {
-        this.$router.push({name: 'Login'})
+        this.$router.push({ name: 'Login' })
       })
       this.$cookies.set('authToken', null)
       this.$cookies.set('userId', null)
