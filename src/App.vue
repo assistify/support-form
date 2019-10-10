@@ -10,11 +10,22 @@
 
 <script>
 import Navbar from '@/components/Navbar'
-import {logout} from './api/login'
+import {logout, checkMySession} from './api/login'
 export default {
   name: 'App',
   components: {
     Navbar
+  },
+  created () {
+    this.config = {
+      server: 'http://localhost:3000',
+      authToken: this.$cookies.get('authToken'),
+      userId: this.$cookies.get('userId')
+    }
+    const session = checkMySession(this.config)
+    if (session.status !== 'error') {
+      this.$router.push({name: 'Support'})
+    }
   },
   methods: {
     makeToast (msg) {
