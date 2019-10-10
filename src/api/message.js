@@ -1,12 +1,12 @@
 import $ from 'jquery'
 const usageLogger = null
 
-function getParentRoomMembers (config, callback) {
+function getParentRoomMembers (client, callback) {
   let url
-  if (config.channelType === 'p') {
-    url = config.server + '/api/v1/groups.members'
+  if (client.channelType === 'p') {
+    url = client.server + '/api/v1/groups.members'
   } else {
-    url = config.server + '/api/v1/channels.members'
+    url = client.server + '/api/v1/channels.members'
   }
 
   $.ajax({
@@ -14,11 +14,11 @@ function getParentRoomMembers (config, callback) {
     dataType: 'json',
     method: 'GET',
     headers: {
-      'X-Auth-Token': config.authToken,
-      'X-User-Id': config.userId
+      'X-Auth-Token': client.authToken,
+      'X-User-Id': client.userId
     },
     data: {
-      roomId: config.channelId
+      roomId: client.channelId
     }
   }).done(function (response) {
     callback(response)
@@ -27,14 +27,14 @@ function getParentRoomMembers (config, callback) {
   })
 }
 
-function createNewDiscussion (config, discussion, callback) {
+function createNewDiscussion (client, discussion, callback) {
   $.ajax({
-    url: config.server.concat('/api/v1/rooms.createDiscussion'),
+    url: client.server.concat('/api/v1/rooms.createDiscussion'),
     dataType: 'json',
     method: 'POST',
     headers: {
-      'X-Auth-Token': config.authToken,
-      'X-User-Id': config.userId
+      'X-Auth-Token': client.authToken,
+      'X-User-Id': client.userId
     },
     data: {
       prid: discussion.parentId,
@@ -48,9 +48,9 @@ function createNewDiscussion (config, discussion, callback) {
   })
 }
 
-function createDiscussion (config, form, callback) {
-  // Get the room in which the mail will posted.
-  getParentRoomMembers(config, function (response, error) {
+function createDiscussion (client, form, callback) {
+  // Get the room in which the form will posted.
+  getParentRoomMembers(client, function (response, error) {
     if (error) {
       callback(null, error)
     } else {
@@ -58,12 +58,12 @@ function createDiscussion (config, form, callback) {
         return member.username
       })
       const discussion = {
-        parentId: config.channelId,
+        parentId: client.channelId,
         name: form.subject,
         members: members || []
       }
       // Create a new channel
-      createNewDiscussion(config, discussion, function (response, error) {
+      createNewDiscussion(client, discussion, function (response, error) {
         if (error) {
           callback(null, error)
         } else {
@@ -92,7 +92,7 @@ export function postForm (client, form, callback) {
         data: {
           'roomId': response.discussion._id,
           'channel': '#' + discussion,
-          'text': form
+          'text': form.description
         }
       }).done(function (response) {
         if (usageLogger) {
@@ -113,19 +113,15 @@ export function postForm (client, form, callback) {
 }
 
 export function getChannelKeywords (client, callback) {
-  $.ajax({
-    url: client.server.concat('/api/v1/channels.list'),
-    dataType: 'json',
-    method: 'GET',
-    headers: {
-      'X-Auth-Token': client.authToken,
-      'X-User-Id': client.userId
-    }
-  }).done(function (response) {
-    callback(response)
-  }).fail(function (error) {
-    callback(null, error)
-  })
+  const rooms = getJoinedChannels(client)
+  return rooms
+    .filter((room) => room.hasOwnProperty('customFields'))
+    .map((room) => {
+      return {
+        id: room._id,
+        keywords: room.customFields.keywords
+      }
+    })
 }
 
 export function setChannelKeywords (client, channel, callback) {
@@ -145,4 +141,34 @@ export function setChannelKeywords (client, channel, callback) {
   }).fail(function (error) {
     callback(null, error)
   })
+}
+
+function getJoinedChannels (client) {
+  const channelsApi = client.server + '/api/v1/channels.list.joined'
+  const groupsApi = client.server + '/api/v1/groups.list'
+
+  const channels = $.ajax({
+    url: channelsApi,
+    dataType: 'json',
+    method: 'GET',
+    headers: {
+      'X-Auth-Token': client.authToken,
+      'X-User-Id': client.userId
+    },
+    async: false
+  })
+
+  const groups = $.ajax({
+    url: groupsApi,
+    dataType: 'json',
+    method: 'GET',
+    headers: {
+      'X-Auth-Token': client.authToken,
+      'X-User-Id': client.userId
+    },
+    async: false
+  })
+
+  const rooms = groups.responseJSON.groups.concat(channels.responseJSON.channels)
+  return rooms.sort((first, second) => first.name.localeCompare(second.name))
 }

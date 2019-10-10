@@ -70,8 +70,6 @@ export default {
       })
     },
     loginStatus: function (event) {
-      // this.$router.push({name: 'Support'})
-      // console.log(document.cookie, 'already logged in')
     }
   }
 }

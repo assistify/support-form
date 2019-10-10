@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import { login } from '../api/login'
+import {login} from '../api/login'
 export default {
   name: 'Login',
   data () {
@@ -56,14 +56,14 @@ export default {
     this.loginStatus()
   },
   methods: {
-    onLogin: async function (event) {
+    onLogin: function (event) {
       event.preventDefault()
       const config = {
         server: 'http://localhost:3000',
         user: this.form.username,
         password: this.form.password
       }
-      await login(config, (res, err) => {
+      login(config, (res, err) => {
         if (err) {
           this.$parent.makeToast({
             text: err.responseJSON.message,
@@ -84,8 +84,6 @@ export default {
       })
     },
     loginStatus: function (event) {
-      // this.$router.push({name: 'Support'})
-      // console.log(document.cookie, 'already logged in')
     },
     onClose: function (event) {}
   }

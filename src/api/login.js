@@ -2,7 +2,7 @@
 import $ from 'jquery'
 
 // Invoke the login api call.
-export async function login (client, callback) {
+export function login (client, callback) {
   $.ajax({
     url: client.server.concat('/api/v1/login'),
     method: 'POST',
@@ -17,7 +17,7 @@ export async function login (client, callback) {
   })
 }
 
-export async function logout (client, callback) {
+export function logout (client, callback) {
   $.ajax({
     url: client.server.concat('/api/v1/logout'),
     method: 'POST',

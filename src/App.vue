@@ -1,7 +1,7 @@
 <template>
 <div>
      <Navbar/>
-  <div id="app">
+    <div id="app">
       <!-- As a link -->
     <router-view />
   </div>
@@ -10,6 +10,7 @@
 
 <script>
 import Navbar from '@/components/Navbar'
+import {logout} from './api/login'
 export default {
   name: 'App',
   components: {
@@ -23,6 +24,17 @@ export default {
         variant: msg.variant || null,
         toaster: msg.toaster || 'b-toaster-top-right',
         solid: true
+      })
+    },
+    onLogout (event) {
+      event.preventDefault()
+      const client = {
+        server: 'http://localhost:3000',
+        userId: this.$route.query.userId,
+        authToken: this.$route.query.authToken
+      }
+      logout(client, () => {
+        this.$router.push({name: 'Login'})
       })
     }
   }

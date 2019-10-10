@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import { postForm } from '../api/message'
+import {postForm, getChannelKeywords} from '../api/message'
 export default {
   data () {
     return {
@@ -54,18 +54,33 @@ export default {
       show: true
     }
   },
+  created: function () {
+    const client = {
+      server: 'http://localhost:3000',
+      authToken: this.$route.query.authToken,
+      userId: this.$route.query.userId
+    }
+    this.keywords = getChannelKeywords(client)
+  },
   methods: {
     async onSubmit (evt) {
       evt.preventDefault()
+      const text = this.form.subject
+      const channelMatched = this.keywords.find((channel) => {
+        const found = channel.keywords.some((kw) => text.includes(kw))
+        if (found) {
+          return channel.id
+        }
+        return false
+      })
       const client = {
         server: 'http://localhost:3000',
         authToken: this.$route.query.authToken,
         userId: this.$route.query.userId,
-        channelId: 'GENERAL'
+        channelId: channelMatched.id || 'GENERAL'
       }
-
       postForm(client, this.form, res => {
-        console.log(res)
+        alert(res.responseJSON)
       })
     },
     onReset (evt) {

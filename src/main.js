@@ -11,7 +11,7 @@ import VueCookies from 'vue-cookies'
 Vue.use(BootstrapVue)
 Vue.use(VueCookies)
 
-VueCookies.config('1d')
+VueCookies.config('30d')
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
