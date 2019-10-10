@@ -31,3 +31,14 @@ export function logout (client, callback) {
     callback(null, error)
   })
 }
+export function checkMySession (client, callback) {
+  return $.ajax({
+    url: client.server.concat('/api/v1/me'),
+    method: 'GET',
+    headers: {
+      'X-Auth-Token': client.authToken,
+      'X-User-Id': client.userId
+    },
+    async: false
+  }).responseJSON
+}
