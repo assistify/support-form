@@ -54,13 +54,12 @@ export default {
       show: true
     }
   },
+  beforeCreate: function () {
+
+  },
   created: function () {
-    const client = {
-      server: 'http://localhost:3000',
-      authToken: this.$route.query.authToken,
-      userId: this.$route.query.userId
-    }
-    this.keywords = getChannelKeywords(client)
+    // Read document cookie
+    this.keywords = getChannelKeywords(this.$parent.config)
   },
   methods: {
     async onSubmit (evt) {
@@ -75,8 +74,8 @@ export default {
       })
       const client = {
         server: 'http://localhost:3000',
-        authToken: this.$route.query.authToken,
-        userId: this.$route.query.userId,
+        authToken: this.$cookie.get('authToken'),
+        userId: this.$cookie.get('userId'),
         channelId: channelMatched.id || 'GENERAL'
       }
       postForm(client, this.form, res => {

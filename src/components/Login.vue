@@ -52,9 +52,6 @@ export default {
       show: true
     }
   },
-  created () {
-    this.loginStatus()
-  },
   methods: {
     onLogin: function (event) {
       event.preventDefault()
@@ -72,18 +69,20 @@ export default {
           })
           return
         }
+        // Update the cookie
         this.$cookies.set('authToken', res.data.authToken)
         this.$cookies.set('userId', res.data.userId)
-        this.$router.push({ name: 'Support',
-          query:
-          {
-            userId: res.data.userId,
-            authToken: res.data.authToken
-          }
-        })
+        res.data.me.roles.includes('admin')
+          ? this.$cookies.set('admin', true)
+          : this.$cookies.set('admin', false)
+
+        // Update the configuration of the app with login details
+        this.$parent.config.authToken = res.data.authToken
+        this.$parent.config.userId = res.data.userId
+
+        // Move to support creation
+        this.$router.push({name: 'Support'})
       })
-    },
-    loginStatus: function (event) {
     },
     onClose: function (event) {}
   }
