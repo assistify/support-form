@@ -5,7 +5,7 @@
       Assistify Support
     </b-navbar-brand>
     <b-navbar-nav class="ml-left">
-      <b-nav-item>
+      <b-nav-item v-show="config">
         <b-nav-item href="#" v-on:click="onConfigure">Configure</b-nav-item>
       </b-nav-item>
     </b-navbar-nav>
@@ -20,15 +20,17 @@
 <script>
 export default {
   name: 'Navbar',
+  data () {
+    return {
+      config: this.showConfigure()
+    }
+  },
   methods: {
     onConfigure () {
-      this.$router.push({ name: 'Configure',
-        query:
-          {
-            userId: this.$route.query.userId,
-            authToken: this.$route.query.authToken
-          }
-      })
+      this.$router.push({name: 'Configure'})
+    },
+    showConfigure () {
+      return this.$parent.config.admin || false
     }
   }
 }
