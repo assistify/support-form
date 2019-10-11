@@ -58,7 +58,11 @@ export default {
   },
   created: function () {
     // Read document cookie
-    this.keywords = getChannelKeywords(this.$parent.config)
+    if (this.$parent.config.server && this.$parent.config.userId && this.$parent.config.authToken) {
+      this.keywords = getChannelKeywords(this.$parent.config)
+    } else {
+      this.$router.push({name: 'Login'})
+    }
   },
   methods: {
     onSubmit (evt) {
