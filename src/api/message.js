@@ -112,21 +112,24 @@ export function postForm (client, form, callback) {
   }
 }
 
-export function getChannelKeywords (client, callback) {
-  const rooms = getJoinedChannels(client)
-  return rooms
+export function getChannelKeywords (channels = []) {
+  return channels
     .filter((room) => room.hasOwnProperty('customFields'))
     .map((room) => {
       return {
         id: room._id,
+        name: room.fname,
         keywords: room.customFields.keywords
       }
     })
 }
 
 export function setChannelKeywords (client, channel, callback) {
+  const url = channel.type === 'p'
+    ? client.server.concat('/api/v1/groups.setCustomFields')
+    : client.server.concat('/api/v1/channels.setCustomFields')
   $.ajax({
-    url: client.server.concat('/api/v1/channels.setCustomFields'),
+    url,
     dataType: 'json',
     method: 'POST',
     headers: {
@@ -134,7 +137,10 @@ export function setChannelKeywords (client, channel, callback) {
       'X-User-Id': client.userId
     },
     data: {
-      roomId: channel._id
+      roomId: channel.id,
+      customFields: {
+        keywords: channel.keywords
+      }
     }
   }).done(function (response) {
     callback(response)
@@ -143,7 +149,7 @@ export function setChannelKeywords (client, channel, callback) {
   })
 }
 
-function getJoinedChannels (client) {
+export function getJoinedChannels (client) {
   const channelsApi = client.server + '/api/v1/channels.list.joined'
   const groupsApi = client.server + '/api/v1/groups.list'
 

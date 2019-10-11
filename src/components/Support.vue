@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import {postForm, getChannelKeywords} from '../api/message'
+import {postForm, getChannelKeywords, getJoinedChannels} from '../api/message'
 
 export default {
   name: 'Support',
@@ -59,7 +59,7 @@ export default {
   created: function () {
     // Read document cookie
     if (this.$parent.config.server && this.$parent.config.userId && this.$parent.config.authToken) {
-      this.keywords = getChannelKeywords(this.$parent.config)
+      this.keywords = getChannelKeywords(getJoinedChannels(this.$parent.config))
     } else {
       this.$router.push({name: 'Login'})
     }
