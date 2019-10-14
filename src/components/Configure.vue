@@ -52,7 +52,7 @@ export default {
           channel: channel.name,
           type: channel.t,
           keywords:
-            (channel.customFields.hasOwnProperty('keywords') &&
+            (channel.customFields && channel.customFields.hasOwnProperty('keywords') &&
               channel.customFields.keywords.join(',')) || null
         }
       })
