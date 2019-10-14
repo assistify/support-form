@@ -32,15 +32,17 @@ export function logout (client, callback) {
   })
 }
 export function checkMySession (client, callback) {
-  return $.ajax({
-    url: client.server.concat('/api/v1/me'),
-    method: 'GET',
-    headers: {
-      'X-Auth-Token': client.authToken,
-      'X-User-Id': client.userId
-    },
-    async: false
-  }).responseJSON
+  if (client.server) {
+    return $.ajax({
+      url: client.server.concat('/api/v1/me'),
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': client.authToken,
+        'X-User-Id': client.userId
+      },
+      async: false
+    }).responseJSON
+  }
 }
 
 export function validateURL (url, callback) {
