@@ -42,3 +42,14 @@ export function checkMySession (client, callback) {
     async: false
   }).responseJSON
 }
+
+export function validateURL (url, callback) {
+  $.ajax({
+    url: url + '/api/v1/info',
+    timeout: 2000
+  }).done((response) => {
+    callback(response)
+  }).fail((error) => {
+    callback(null, error)
+  })
+}

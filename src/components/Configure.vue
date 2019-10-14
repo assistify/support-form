@@ -30,8 +30,6 @@ export default {
     return {
       selectMode: 'single',
       fields: [
-        { key: 'id', label: 'Channel Id' },
-        { key: 'type', label: 'Type' },
         { key: 'channel', label: 'Channel' },
         { key: 'keywords', label: 'Keywords' },
         { key: 'actions', label: 'Actions' }

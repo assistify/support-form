@@ -1,6 +1,20 @@
   <template>
   <b-container class="login_page">
     <b-card align="center" header="Assistify" header-tag="header" class="mb-2">
+      <div v-if="!show">
+        <b-input-group
+          class="mb-3"
+          prepend="Server"
+          placeholder="Enter your name"
+          size=""
+          v-model="url"
+        >
+          <b-form-input placeholder="Enter the URL https://.."></b-form-input>
+          <b-input-group-append>
+            <b-button size="sm" text="Button" variant="success" @click="onConnect">Connect</b-button>
+          </b-input-group-append>
+        </b-input-group>
+      </div>
       <b-form @submit="onLogin" @reset="onClose" v-if="show">
         <b-form-row align-h="center" class="my-3">
           <b-col>
@@ -39,7 +53,7 @@
 </template>
 
 <script>
-import {login} from '../api/login'
+import { login, validateURL } from '../api/login'
 export default {
   name: 'Login',
   data () {
@@ -49,7 +63,8 @@ export default {
         password: ''
       },
       err: false,
-      show: true
+      show: false,
+      url: null
     }
   },
   methods: {
@@ -81,10 +96,23 @@ export default {
         this.$parent.config.admin = isAdmin
 
         // Move to support creation
-        this.$router.push({name: 'Support'})
+        this.$router.push({ name: 'Support' })
       })
     },
-    onClose: function (event) {}
+    onClose: function (event) {},
+    onConnect (event) {
+      this.connectServer()
+    },
+    connectServer () {
+      validateURL(this.url, (response, error) => {
+        if (error) {
+
+        } else {
+          this.show = true
+        }
+      })
+    }
+
   }
 }
 </script>
