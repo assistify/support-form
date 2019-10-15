@@ -77,7 +77,7 @@ function createDiscussion (client, form, callback) {
 export function postForm (client, form, callback) {
   createDiscussion(client, form, function (response, error) {
     if (error) {
-      callback(error)
+      callback(null, error)
     } else {
       const url = client.server + '/api/v1/chat.postMessage'
       const discussion = response.discussion.name
@@ -119,6 +119,7 @@ export function getChannelKeywords (channels = []) {
       return {
         id: room._id,
         name: room.fname,
+        type: room.t,
         keywords: room.customFields.keywords
       }
     })
