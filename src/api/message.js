@@ -114,7 +114,7 @@ export function postForm (client, form, callback) {
 
 export function getChannelKeywords (channels = []) {
   return channels
-    .filter((room) => room.hasOwnProperty('customFields'))
+    .filter((room) => room.hasOwnProperty('customFields') && room.customFields.keywords)
     .map((room) => {
       return {
         id: room._id,
