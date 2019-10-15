@@ -43,7 +43,7 @@ export default {
     setMyInfo (me) {
       this.config.email = me.email
       this.config.name = me.name
-      this.config.admin = me.roles.includes('admin')
+      this.config.admin = me.roles.includes('config-expert')
     },
     doLogin (server, authToken, userId, me) {
       this.$cookies.set('server', this.config.server = server)
