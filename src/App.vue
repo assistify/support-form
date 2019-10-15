@@ -20,11 +20,11 @@ export default {
     this.config = {
       server: this.$cookies.get('server'),
       authToken: this.$cookies.get('authToken'),
-      userId: this.$cookies.get('userId'),
-      admin: this.$cookies.get('admin')
+      userId: this.$cookies.get('userId')
     }
     const session = checkMySession(this.config)
     if (session && session.status !== 'error') {
+      this.setMyInfo(session)
       this.$router.push({ name: 'Support' })
     } else {
       console.log('No session found')
@@ -40,6 +40,19 @@ export default {
         solid: true
       })
     },
+    setMyInfo (me) {
+      this.config.email = me.email
+      this.config.name = me.name
+      this.config.admin = me.roles.includes('admin')
+    },
+    doLogin (server, authToken, userId, me) {
+      this.$cookies.set('server', this.config.server = server)
+      this.$cookies.set('authToken', this.config.authToken = authToken)
+      this.$cookies.set('userId', this.config.userId = userId)
+      this.setMyInfo(me)
+
+      this.$router.push({ name: 'Support' })
+    },
     onLogout (event) {
       event.preventDefault()
       logout(this.config, () => {
@@ -48,7 +61,6 @@ export default {
       this.$cookies.set('server', null)
       this.$cookies.set('authToken', null)
       this.$cookies.set('userId', null)
-      this.$cookies.set('admin', null)
     }
   }
 }
