@@ -75,7 +75,7 @@ export default {
     onLogin: function (event) {
       event.preventDefault()
       const config = {
-        server: this.form.url,
+        server: (new URL(this.form.url)).origin,
         user: this.form.username,
         password: this.form.password
       }
@@ -91,9 +91,10 @@ export default {
         }
       })
     },
-    onClose: function (event) {},
+    onClose (event) {},
     onConnect (event) {
-      validateURL(this.form.url, (response, error) => {
+      const url = (new URL(this.form.url)).origin
+      validateURL(url, (response, error) => {
         if (error) {
           this.$parent.makeToast({
             text: error,
