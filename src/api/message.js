@@ -120,9 +120,26 @@ export function getChannelKeywords (channels = []) {
         id: room._id,
         name: room.fname,
         type: room.t,
-        keywords: room.customFields.keywords
+        keywords: room.customFields.keywords,
+        isDefault: room.default
       }
     })
+}
+
+export function getDefaultChannel (channels = []) {
+  const foundInKeywords = getChannelKeywords(channels).find(room => room.keywords.indexOf('default') >= 0)
+  if (foundInKeywords) {
+    return {id: foundInKeywords.id, type: foundInKeywords.t}
+  }
+  const foundDefault = channels.find((room) => room.default)
+  if (foundDefault) {
+    return {id: foundDefault._id, type: foundDefault.t}
+  }
+  const generalChannel = channels.find((room) => room.name.match(/^general$/i))
+  if (generalChannel) {
+    return {id: generalChannel._id, type: generalChannel.t}
+  }
+  throw Error('No default channel found!')
 }
 
 export function setChannelKeywords (client, channel, callback) {

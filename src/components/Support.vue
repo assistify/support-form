@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import {postForm, getChannelKeywords, getJoinedChannels} from '../api/message'
+import {postForm, getChannelKeywords, getDefaultChannel, getJoinedChannels} from '../api/message'
 
 export default {
   name: 'Support',
@@ -43,7 +43,9 @@ export default {
   created: function () {
     // Read document cookie
     if (this.$parent.config.server && this.$parent.config.userId && this.$parent.config.authToken) {
-      this.keywords = getChannelKeywords(getJoinedChannels(this.$parent.config))
+      const channels = getJoinedChannels(this.$parent.config)
+      this.keywords = getChannelKeywords(channels)
+      this.defaultChannel = getDefaultChannel(channels)
     } else {
       this.$router.push({name: 'Login'})
     }
@@ -52,10 +54,10 @@ export default {
     onSubmit (evt) {
       evt.preventDefault()
       const text = this.form.subject + ' ' + this.form.description
-      const channelMatched = this.keywords.find((channel) => channel.keywords.some((kw) => text.includes(kw)))
+      const channelMatched = this.keywords.find((channel) => channel.keywords.some((kw) => text.includes(kw))) || this.defaultChannel
       const client = Object.assign({
-        channelId: (channelMatched && channelMatched.id) || 'GENERAL',
-        channelType: (channelMatched && channelMatched.type) || 'p'
+        channelId: channelMatched.id,
+        channelType: channelMatched.type
       }, this.$parent.config)
       postForm(client, this.form, (res, err) => {
         const modalConfig = {
