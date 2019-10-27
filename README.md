@@ -4,6 +4,10 @@
 
 When my customers have a problem with my product and need immediate support, I want to immediately assign the problem to the right expert so that customers get help very quickly. It is explicitly not about the time to find the solution, but about the customer becoming connected with the right expert as quickly as possible.
 
+## See it live
+
+- https://assistify.github.io/support-form/
+
 ## Possible solution
 
 Provide a web-based app which enables customers to drop the most important information in a web form. They do not have to hassle with systems or log-ins. On the other side, the app forwards the issue to the correct support team immediately. The support team provides support within an Assistify workplace.
